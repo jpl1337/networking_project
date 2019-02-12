@@ -16,7 +16,7 @@ public class MultiThreadServer implements Runnable {
     }
 
     public static void main(String args[]) throws Exception {
-        ServerSocket ssock = new ServerSocket(1234);
+        ServerSocket ssock = new ServerSocket(2009);
         System.out.println("Listening");
         while (true) {
             Socket sock = ssock.accept();
@@ -26,7 +26,7 @@ public class MultiThreadServer implements Runnable {
     }
 
     public void run() {
-
+      String sendString = null;
         try {
             InputStream input = csocket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -51,32 +51,35 @@ public class MultiThreadServer implements Runnable {
                 writer.flush();
             }
             if(line.equals("3")) {
+            	
                 PrintWriter writer = new PrintWriter(csocket.getOutputStream());
                 p = Runtime.getRuntime().exec("free -mh");
                 BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 while ((s = br.readLine()) != null){
                 //change this
-                    writer.println("line: " + s);
-                    writer.flush();
+                    sendString+=s + "\n";
                 }
+                writer.print(sendString);
+                writer.flush();
                 //don't know if you need the two lines below
                 //p.waitFor();
-                writer.println ("exit: " + p.exitValue());
+               
                 //the line below closes
-                writer.flush();
+              
                 p.destroy();
             }
             if(line.equals("4")) {
                 PrintWriter writer = new PrintWriter(csocket.getOutputStream());
                 p = Runtime.getRuntime().exec("netstat");
                 BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                while ((s = br.readLine()) != null) {
+                while ((s = br.readLine()) != null){
                     //change this
-                    writer.println("line: " + s);
-                }
-                //don't know if you need the two lines below
-                //p.waitFor();
-                writer.println ("exit: " + p.exitValue());
+                        sendString+=s + "\n";
+                    }
+                    writer.print(sendString);
+                    writer.flush();
+                    //don't know if you need the two lines below
+                    //p.waitFor();
                 //the line below closes
                 writer.flush();
                 p.destroy();
@@ -85,13 +88,12 @@ public class MultiThreadServer implements Runnable {
                 PrintWriter writer = new PrintWriter(csocket.getOutputStream());
                 p = Runtime.getRuntime().exec("users");
                 BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                while ((s = br.readLine()) != null) {
+                while ((s = br.readLine()) != null){
                     //change this
-                    writer.println("line: " + s);
-                }
-                //don't know if you need the two lines below
-                //p.waitFor();
-                writer.println ("exit: " + p.exitValue());
+                        sendString+=s + "\n";
+                    }
+                    writer.print(sendString);
+                    writer.flush();
                 //the line below closes
                 writer.flush();
                 p.destroy();
@@ -101,12 +103,12 @@ public class MultiThreadServer implements Runnable {
                 p = Runtime.getRuntime().exec("ps -A");
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(p.getInputStream()));
-                while ((s = br.readLine()) != null)
+                while ((s = br.readLine()) != null){
                     //change this
-                    writer.println("line: " + s);
-                //don't know if you need the two lines below
-                //p.waitFor();
-                writer.println ("exit: " + p.exitValue());
+                        sendString+=s + "\n";
+                    }
+                    writer.print(sendString);
+                    writer.flush();
                 //the line below closes
                 writer.flush();
                 p.destroy();
